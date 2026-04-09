@@ -1,0 +1,131 @@
+8.1)
+
+#Handle Transactions
+
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;
+
+
+
+#ROLLROLLKACK:
+
+BEGIN;
+DELETE FROM users WHERE id = 5;
+ROLLBACK;
+
+
+
+#В случае ошибки,делаем откат:
+
+BEGIN;
+INSERT INTO users VALUES (1, 'A');
+INSERT INTO users VALUES (1, 'B'); -- duplicate
+ROLLBACK;
+
+#SavePoint:
+
+BEGIN;
+INSERT INTO test VALUES (1);
+SAVEPOINT s1;
+INSERT INTO test VALUES (2);
+ROLLBACK TO s1;
+COMMIT;
+
+
+UPDATE products SET price = price * 1.1;
+
+
+
+8.2) Call PostgreSQL Functions
+
+
+SELECT NOW();
+
+SELECT LENGTH('hello');
+
+SELECT UPPER('abc');
+
+SELECT SQRT(16);
+
+SELECT AGE('2000-01-01');
+
+
+8.3)Call Stored Procedures
+
+#Создание и вызов такой функции:
+
+CREATE PROCEDURE test_proc()
+LANGUAGE SQL
+AS $$
+    SELECT * FROM users;
+$$;
+
+CALL test_proc();
+
+
+
+
+CREATE PROCEDURE add_user(name TEXT)
+LANGUAGE SQL
+AS $$
+    INSERT INTO users(name) VALUES(name);
+$$;
+
+CALL add_user('John');
+
+
+#4)
+CREATE PROCEDURE delete_user(id INT)
+LANGUAGE SQL
+AS $$
+    DELETE FROM users WHERE id = id;
+$$;
+
+CALL delete_user(5);
+
+#CREATE PROCEDURE update_price()
+LANGUAGE SQL
+AS $$
+    UPDATE products SET price = price * 2;
+$$;
+
+CALL update_price();
+
+
+
+
+#5)CREATE PROCEDURE clear_table()
+LANGUAGE SQL
+AS $$
+    DELETE FROM logs;
+$$;
+
+CALL clear_table();
+
+
+
+#8.4)Work with BLOB Data 
+
+#1)создание таблицы:
+CREATE TABLE files (
+    id SERIAL,
+    data BYTEA
+);
+
+#2 Вставка файла 
+INSERT INTO files(data)
+VALUES (pg_read_binary_file('test.png'));
+
+
+#3) Получение информации из файла
+SELECT data FROM files WHERE id = 1;
+
+#4)обновить данные из файла 
+UPDATE files
+SET data = pg_read_binary_file('new.png')
+WHERE id = 1;
+
+#5)Удаление из файла
+DELETE FROM files WHERE id = 1;
