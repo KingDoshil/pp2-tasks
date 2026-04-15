@@ -1,0 +1,118 @@
+# 1. Getting Started
+pygame.display.set_mode((800, 600))
+pygame.display.set_caption("My Game")
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+pygame.display.flip()
+
+
+# 2. Working with Images
+player = pygame.image.load("player.png")
+screen.blit(player, (100, 200))
+
+player = pygame.transform.scale(player, (80, 80))
+rotated_player = pygame.transform.rotate(player, 45)
+
+background = pygame.image.load("bg.png")
+screen.blit(background, (0, 0))
+
+
+# 3. Music and Sound Effects
+pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.play(-1)
+
+pygame.mixer.music.stop()
+
+jump_sound = pygame.mixer.Sound("jump.wav")
+jump_sound.play()
+jump_sound.set_volume(0.5)
+
+
+# 4. Geometric Drawing
+pygame.draw.rect(screen, (255, 0, 0), (100, 100, 120, 60))
+pygame.draw.circle(screen, (0, 255, 0), (300, 200), 50)
+pygame.draw.line(screen, (255, 255, 255), (0, 0), (400, 300), 3)
+pygame.draw.ellipse(screen, (0, 0, 255), (200, 150, 100, 50))
+pygame.draw.polygon(screen, (255, 255, 0), [(100,100), (150,50), (200,100)])
+
+
+# 5. Timer
+clock = pygame.time.Clock()
+clock.tick(60)
+
+time_now = pygame.time.get_ticks()
+
+pygame.time.delay(1000)
+
+MY_EVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(MY_EVENT, 2000)
+
+if pygame.time.get_ticks() - start_time > 5000:
+    print("5 seconds passed")
+
+
+# 6. Fonts and Text
+font = pygame.font.Font(None, 36)
+text = font.render("Hello", True, (255, 255, 255))
+screen.blit(text, (100, 50))
+
+font = pygame.font.SysFont("Arial", 30)
+
+title_font = pygame.font.Font(None, 72)
+title = title_font.render("Game Over", True, (255, 0, 0))
+
+
+# 7. More on Input
+keys = pygame.key.get_pressed()
+if keys[pygame.K_LEFT]:
+    x -= 5
+
+if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_SPACE:
+        print("Jump")
+
+if event.type == pygame.KEYUP:
+    print("Key released")
+
+if event.type == pygame.MOUSEBUTTONDOWN:
+    print(event.pos)
+
+mx, my = pygame.mouse.get_pos()
+
+
+# 8. Centralized Scene Logic
+scene = "menu"
+
+if scene == "menu" and event.type == pygame.KEYDOWN:
+    scene = "game"
+
+if scene == "menu":
+    draw_menu()
+elif scene == "game":
+    draw_game()
+
+if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+    scene = "pause"
+
+if player_health <= 0:
+    scene = "game_over"
+
+
+# 9. Paint app demo
+if event.type == pygame.MOUSEBUTTONDOWN:
+    pygame.draw.circle(screen, (255, 0, 0), event.pos, 10)
+
+if event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
+    pygame.draw.circle(screen, (0, 0, 0), event.pos, 5)
+
+brush_color = (0, 0, 255)
+
+screen.fill((255, 255, 255))
+
+brush_size = 15
+pygame.draw.circle(screen, brush_color, event.pos, brush_size)
